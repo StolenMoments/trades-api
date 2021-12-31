@@ -35,11 +35,13 @@ router.get('/trades', function (req, res) {
       }
     ]*/
 
-    binance.futuresUserTrades('BTCUSDT').then(async (userTrades) => {
+
+    binance.futuresUserTrades().then(async (userTrades) => {
+        console.log(userTrades);
         let trades = [];
         for (let trade of userTrades) {
             trades.push(`(${ trade.id },${ getDateString(trade.time) },  '${ trade.symbol }',
-            '${ trade.positionSide }','${ trade.price }','${ trade.realizedPnl }')`);
+            '${ trade.side }','${ trade.price }','${ trade.realizedPnl }')`);
         }
 
         let conn;
