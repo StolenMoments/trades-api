@@ -10,11 +10,11 @@ const binance = new Binance().options({
 });
 
 /* GET home page. */
-router.get('/', function (req, res, next) {
+router.get('/', function (req, res) {
     res.render('index', { title: 'Express' });
 });
 
-router.get('/trades', function (req, res) {
+router.get('/update', function (req, res) {
     /* sample userTrades
     [
       {
@@ -35,9 +35,7 @@ router.get('/trades', function (req, res) {
       }
     ]*/
 
-
     binance.futuresUserTrades().then(async (userTrades) => {
-        console.log(userTrades);
         let trades = [];
         for (let trade of userTrades) {
             trades.push(`(${ trade.id },${ getDateString(trade.time) },  '${ trade.symbol }',
@@ -48,10 +46,10 @@ router.get('/trades', function (req, res) {
         try {
             conn = await pool.getConnection();
             if (trades.length > 0) {
-                await conn.query('INSERT IGNORE INTO trade_history values ' + trades.join(','));
+                res.send(await conn.query('INSERT IGNORE INTO trade_history values ' + trades.join(',')));
+            } else {
+                res.send("Not Found Trade History");
             }
-            const result = await conn.query('SELECT * FROM TRADE_HISTORY');
-            res.send(result);
         } catch (err) {
             console.log(err);
             res.send(err);
@@ -60,6 +58,19 @@ router.get('/trades', function (req, res) {
         }
     });
 });
+
+router.get("/trades", async function (req, res) {
+    let conn;
+    try {
+        conn = await pool.getConnection();
+        res.send(await conn.query('SELECT * FROM trade_history'));
+    } catch (err) {
+        console.log(err);
+        res.send(err);
+    } finally {
+        if (conn) await conn.end();
+    }
+})
 
 function getDateString(timestamp) {
     const date = new Date(timestamp);
