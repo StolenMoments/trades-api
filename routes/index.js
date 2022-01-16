@@ -47,6 +47,7 @@ router.get('/update', function (req, res) {
     try {
       conn = await pool.getConnection();
       if (trades.length > 0) {
+        res.setHeader("Access-Control-Allow-Origin","http://localhost:8100");
         res.send(await conn.query(
           'INSERT IGNORE INTO trade_history values ' + trades.join(',')));
       } else {
@@ -81,6 +82,7 @@ router.get('/trades', async function (req, res) {
 
   try {
     conn = await pool.getConnection();
+    console.log(res);
     res.send(await conn.query(sql));
   } catch (err) {
     console.log(err);
@@ -89,6 +91,14 @@ router.get('/trades', async function (req, res) {
     if (conn) await conn.end();
   }
 });
+
+
+router.post('/auth/login', function (req, res) {
+  res.send({
+    authToken: 'token',
+    message: '로그인 성공'
+  })
+})
 
 function getDateString(timestamp) {
   const date = new Date(timestamp);
