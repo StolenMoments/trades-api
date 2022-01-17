@@ -93,13 +93,6 @@ router.get('/trades', async function (req, res) {
 });
 
 
-router.post('/auth/login', function (req, res) {
-  res.send({
-    authToken: 'token',
-    message: '로그인 성공'
-  })
-})
-
 function getDateString(timestamp) {
   const date = new Date(timestamp);
   let year = date.getFullYear().toString();
