@@ -92,33 +92,10 @@ router.get('/trades', async function (req, res) {
   }
 });
 
-
-function getDateString(timestamp) {
-  const date = new Date(timestamp);
-  let year = date.getFullYear().toString();
-
-  let month = date.getMonth() + 1;
-  month = month < 10 ? '0' + month.toString() : month.toString();
-
-  let day = date.getDate();
-  day = day < 10 ? '0' + day.toString() : day.toString();
-
-  let hour = date.getHours();
-  hour = hour < 10 ? '0' + hour.toString() : hour.toString();
-
-  let minutes = date.getMinutes();
-  minutes = minutes < 10 ? '0' + minutes.toString() : minutes.toString();
-
-  let seconds = date.getSeconds();
-  seconds = seconds < 10 ? '0' + seconds.toString() : seconds.toString();
-
-  return String().concat(year, month, day, hour, minutes, seconds);
-}
-
 module.exports = router;
 
 setTimeout(() => {
-  axios.get("http://localhost:8080/update").then(response => {
+  axios.get(`http://localhost:${process.env.PORT}/update`).then(response => {
     console.log(response.data);
   }).catch(err => {
     console.log(err);
