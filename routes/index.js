@@ -3,12 +3,8 @@ var router = express.Router();
 
 require('dotenv').config();
 const pool = require('../database/mariadb');
-const Binance = require('node-binance-api');
 const axios = require('axios');
-const binance = new Binance().options({
-  APIKEY: process.env.APIKEY,
-  APISECRET: process.env.APISECRET,
-});
+const binanceApi = require('../common/binanceApi');
 
 /* GET home page. */
 router.get('/', function (req, res) {
@@ -36,7 +32,7 @@ router.get('/update', function (req, res) {
     }
   ]*/
 
-  binance.futuresUserTrades().then(async (userTrades) => {
+  binanceApi.futuresUserTrades().then(async (userTrades) => {
     let trades = [];
     for (let trade of userTrades) {
       trades.push(`(${trade.id},${getDateString(trade.time)},  '${trade.symbol}',

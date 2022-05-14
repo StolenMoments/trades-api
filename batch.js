@@ -1,12 +1,8 @@
 const pool = require('./database/mariadb');
-const Binance = require('node-binance-api');
 const getDateString = require('./common/functions');
-const binance = new Binance().options({
-  APIKEY: process.env.APIKEY,
-  APISECRET: process.env.APISECRET,
-});
+const binanceApi = require('./common/binanceApi');
 
-binance.futuresUserTrades().then(async (userTrades) => {
+binanceApi.futuresUserTrades().then(async (userTrades) => {
   let trades = [];
   for (let trade of userTrades) {
     trades.push(`(${trade.id},${getDateString(trade.time)},  '${trade.symbol}',
